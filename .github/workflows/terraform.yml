@@ -18,23 +18,33 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+      # Step 1: Checkout GitHub repository
       - name: Checkout Repository
         uses: actions/checkout@v4
 
+      # Step 2: Authenticate AWS using OIDC
       - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v4
         with:
-          role-to-assume: ${{ secrets.AWS_ROLE_ARN }}
+          role-to-assume: arn:aws:iam::247893368926:role/OIDC-role
           aws-region: us-east-1
 
+      # Step 3: Verify AWS authentication
       - name: Verify AWS Identity
         run: aws sts get-caller-identity
 
+      # Step 4: Install Terraform
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v3
 
+      # Step 5: Initialize Terraform
       - name: Terraform Init
         run: terraform init
 
+      # Step 6: Validate Terraform configuration
+      - name: Terraform Validate
+        run: terraform validate
+
+      # Step 7: Generate Terraform execution plan
       - name: Terraform Plan
         run: terraform plan
